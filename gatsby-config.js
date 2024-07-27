@@ -3,11 +3,13 @@ module.exports = {
     title: `Adnan Alam - Cybersecurity Expert`,
     description: `Portfolio and blog of Adnan Alam, showcasing expertise in cybersecurity, ethical hacking, and secure software development.`,
     author: `Adnan Alam`,
-    siteUrl: `https://www.yourdomain.com`, // Replace with your actual domain
+    siteUrl: `https://adnanalam04.github.io`, // Updated to your GitHub Pages URL
   },
   plugins: [
     `gatsby-plugin-react-helmet`,
     `gatsby-plugin-image`,
+    `gatsby-plugin-sharp`,
+    `gatsby-transformer-sharp`,
     {
       resolve: `gatsby-source-filesystem`,
       options: {
@@ -32,23 +34,32 @@ module.exports = {
               maxWidth: 630,
             },
           },
-          `gatsby-remark-prismjs`,
+          {
+            resolve: `gatsby-remark-prismjs`,
+            options: {
+              classPrefix: "language-",
+              inlineCodeMarker: null,
+              aliases: {},
+              showLineNumbers: false,
+              noInlineHighlight: false,
+            },
+          },
         ],
       },
     },
-    `gatsby-transformer-sharp`,
-    `gatsby-plugin-sharp`,
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `adnan-alam-portfolio`,
-        short_name: `portfolio`,
+        name: `Adnan Alam - Cybersecurity Portfolio`,
+        short_name: `Adnan Alam`,
         start_url: `/`,
         background_color: `#663399`,
         theme_color: `#663399`,
         display: `minimal-ui`,
-        icon: `src/images/gatsby-icon.png`, // This path is relative to the root of the site.
+        icon: `src/images/gatsby-icon.png`, // Ensure this file exists
       },
     },
+    `gatsby-plugin-offline`, // Add this for offline support
   ],
+  pathPrefix: "/adnanalam04.github.io", // Add this for GitHub Pages deployment
 }

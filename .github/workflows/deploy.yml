@@ -42,3 +42,5 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
           publish_branch: gh-pages
+          cname: adnanalam.me  # Replace with your custom domain if you have one
+

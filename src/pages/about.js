@@ -1,5 +1,5 @@
 import React from "react"
-import Layout from "../components/Layout"
+import Layout from "../components/layout"
 import { motion } from "framer-motion"
 import { FaGraduationCap, FaCertificate, FaTools } from "react-icons/fa"
 import "../styles/about.css"

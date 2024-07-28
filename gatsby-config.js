@@ -3,7 +3,7 @@ module.exports = {
     title: `Adnan Alam - Cybersecurity Expert`,
     description: `Portfolio and blog of Adnan Alam, showcasing expertise in cybersecurity, ethical hacking, and secure software development.`,
     author: `Adnan Alam`,
-    siteUrl: `https://adnanalam04.github.io`, // Updated to your GitHub Pages URL
+    siteUrl: `https://adnanalam.me`, // Updated to your custom domain
   },
   plugins: [
     `gatsby-plugin-react-helmet`,
@@ -59,7 +59,7 @@ module.exports = {
         icon: `src/images/gatsby-icon.png`, // Ensure this file exists
       },
     },
-    `gatsby-plugin-offline`, // Add this for offline support
+    `gatsby-plugin-offline`, // For offline support
   ],
-  pathPrefix: "/adnanalam04.github.io", // Add this for GitHub Pages deployment
+  // Remove the pathPrefix since you're using a custom domain
 }

@@ -20,7 +20,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   const result = await graphql(`
     {
       allMarkdownRemark(
-        sort: { order: DESC, fields: [frontmatter___date] }
+        sort: { frontmatter: { date: DESC } }
         limit: 1000
       ) {
         edges {
@@ -50,10 +50,27 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
       component: blogPostTemplate,
       context: {
         slug: node.fields.slug,
-        // You can add additional context here if needed
         prev: index === 0 ? null : posts[index - 1].node,
         next: index === posts.length - 1 ? null : posts[index + 1].node,
       },
     })
   })
+}
+
+exports.createSchemaCustomization = ({ actions }) => {
+  const { createTypes } = actions
+  const typeDefs = `
+    type MarkdownRemark implements Node {
+      frontmatter: Frontmatter
+      fields: Fields
+    }
+    type Frontmatter {
+      title: String
+      date: Date @dateformat
+    }
+    type Fields {
+      slug: String
+    }
+  `
+  createTypes(typeDefs)
 }

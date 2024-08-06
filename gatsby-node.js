@@ -16,11 +16,10 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
 exports.createPages = async ({ actions, graphql, reporter }) => {
   const { createPage } = actions
   const blogPostTemplate = path.resolve(`src/templates/blogPost.js`)
-  const tagTemplate = path.resolve(`src/templates/tag.js`)
-
+  
   const result = await graphql(`
     {
-      postsRemark: allMarkdownRemark(
+      allMarkdownRemark(
         sort: { frontmatter: { date: DESC } }
         limit: 1000
       ) {
@@ -32,15 +31,8 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
             frontmatter {
               title
               tags
-              date
             }
           }
-        }
-      }
-      tagsGroup: allMarkdownRemark(limit: 2000) {
-        group(field: frontmatter___tags) {
-          fieldValue
-          totalCount
         }
       }
     }
@@ -51,9 +43,8 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     return
   }
 
-  const posts = result.data.postsRemark.edges
+  const posts = result.data.allMarkdownRemark.edges
 
-  // Create blog post pages
   posts.forEach(({ node }, index) => {
     createPage({
       path: node.fields.slug,
@@ -66,17 +57,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     })
   })
 
-  // Create tag pages
-  const tags = result.data.tagsGroup.group
-  tags.forEach(tag => {
-    createPage({
-      path: `/tags/${tag.fieldValue}/`,
-      component: tagTemplate,
-      context: {
-        tag: tag.fieldValue,
-      },
-    })
-  })
+
 }
 
 exports.createSchemaCustomization = ({ actions }) => {
@@ -87,14 +68,12 @@ exports.createSchemaCustomization = ({ actions }) => {
       fields: Fields
     }
     type Frontmatter {
-      title: String!
-      date: Date! @dateformat
-      tags: [String!]!
-      description: String
-      featuredImage: File @fileByRelativePath
+      title: String
+      date: Date @dateformat
+      tags: [String]
     }
     type Fields {
-      slug: String!
+      slug: String
     }
   `
   createTypes(typeDefs)

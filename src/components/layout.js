@@ -1,121 +1,188 @@
 import React, { useState, useEffect } from "react"
-import { Link } from "gatsby"
-import { ParallaxProvider } from 'react-scroll-parallax'
+import PropTypes from "prop-types"
+import { useStaticQuery, graphql, Link } from "gatsby"
 import { motion, AnimatePresence } from "framer-motion"
-import { FaBars, FaTimes, FaGithub, FaLinkedin, FaTwitter, FaMoon, FaSun } from "react-icons/fa"
-import "../styles/layout.css"
+import { useLocation } from "@reach/router"
+import { FaGithub, FaLinkedin, FaTwitter, FaBars, FaTimes, FaHome, FaUser, FaProjectDiagram, FaCogs, FaBlog, FaEnvelope, FaPhone, FaMapMarkerAlt, FaArrowUp } from "react-icons/fa"
+import "./layout.css"
 
 const Layout = ({ children }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isMounted, setIsMounted] = useState(false)
-  const [scrollPosition, setScrollPosition] = useState(0)
-  const [isDarkMode, setIsDarkMode] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+  const [hideNav, setHideNav] = useState(false)
+  const [lastScrollY, setLastScrollY] = useState(0)
+  const [showBackToTop, setShowBackToTop] = useState(false)
+  const location = useLocation()
+
+  const data = useStaticQuery(graphql`
+    query SiteTitleQuery {
+      site {
+        siteMetadata {
+          title
+        }
+      }
+    }
+  `)
 
   useEffect(() => {
-    setIsMounted(true)
-    window.addEventListener('scroll', handleScroll)
-    const savedDarkMode = localStorage.getItem('darkMode') === 'true'
-    setIsDarkMode(savedDarkMode)
-    if (savedDarkMode) {
-      document.body.classList.add('dark-mode')
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+
+      if (currentScrollY > lastScrollY) {
+        setHideNav(true)
+      } else {
+        setHideNav(false)
+      }
+
+      if (currentScrollY > 300) {
+        setShowBackToTop(true)
+      } else {
+        setShowBackToTop(false)
+      }
+
+      setLastScrollY(currentScrollY)
     }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [lastScrollY])
 
-  const handleScroll = () => {
-    setScrollPosition(window.pageYOffset)
-  }
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen)
-  }
-
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode)
-    document.body.classList.toggle('dark-mode')
-    localStorage.setItem('darkMode', !isDarkMode)
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
   }
 
   const menuItems = [
-    { path: "/", label: "Home" },
-    { path: "/about", label: "About" },
-    { path: "/services", label: "Services" },
-    { path: "/projects", label: "Projects" },
-    { path: "/blog", label: "Blog" },
-    { path: "/contact", label: "Contact" },
+    { path: "/", label: "Home", icon: FaHome },
+    { path: "/about", label: "About", icon: FaUser },
+    { path: "/projects", label: "Projects", icon: FaProjectDiagram },
+    { path: "/services", label: "Services", icon: FaCogs },
+    { path: "/blog", label: "Blog", icon: FaBlog },
+    { path: "/contact", label: "Contact", icon: FaEnvelope },
   ]
 
-  return (
-    <ParallaxProvider>
-      <div className={`layout ${isDarkMode ? 'dark-mode' : ''}`}>
-        <motion.header
-          initial={{ y: -100 }}
-          animate={{ y: 0 }}
-          transition={{ duration: 0.5 }}
-          className={scrollPosition > 50 ? "scrolled" : ""}
-        >
-          <div className="container">
-            <motion.div
-              className="logo"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Link to="/">Adnan Portfolio</Link>
-            </motion.div>
-            <nav className={isMenuOpen ? "open" : ""}>
-              <button className="menu-toggle" onClick={toggleMenu} aria-label="Toggle menu">
-                {isMenuOpen ? <FaTimes /> : <FaBars />}
-              </button>
-              <AnimatePresence>
-                {(isMenuOpen || (isMounted && typeof window !== 'undefined' && window.innerWidth > 768)) && (
-                  <motion.ul
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    {menuItems.map((item, index) => (
-                      <motion.li
-                        key={item.path}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                      >
-                        <Link to={item.path} activeClassName="active" onClick={() => setIsMenuOpen(false)}>
-                          {item.label}
-                        </Link>
-                      </motion.li>
-                    ))}
-                    <motion.li
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <button onClick={toggleDarkMode} className="dark-mode-toggle" aria-label="Toggle dark mode">
-                        {isDarkMode ? <FaSun /> : <FaMoon />}
-                      </button>
-                    </motion.li>
-                  </motion.ul>
-                )}
-              </AnimatePresence>
-            </nav>
-          </div>
-        </motion.header>
-        <main>{children}</main>
-        <footer>
-          <div className="container">
-            <p>&copy; {new Date().getFullYear()} Adnan Alam | Cybersecurity Expert</p>
-            <div className="social-links">
-              <motion.a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.8 }}><FaGithub /></motion.a>
-              <motion.a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.8 }}><FaLinkedin /></motion.a>
-              <motion.a href="https://twitter.com/yourusername" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.8 }}><FaTwitter /></motion.a>
+  const socialLinks = [
+    { icon: FaGithub, url: "https://github.com/adnanalam04" },
+    { icon: FaLinkedin, url: "https://linkedin.com/in/adnanalam04" },
+    { icon: FaTwitter, url: "https://twitter.com/addyy04" },
+  ]
+
+  const Footer = () => (
+    <footer className={`footer ${location.pathname === "/" ? "footer-home" : "footer-minimal"}`}>
+      <div className="container">
+        {location.pathname === "/" && (
+          <div className="footer-content">
+            <div className="footer-section">
+              <h3 className="footer-title">Contact</h3>
+              <p><FaEnvelope className="footer-icon" /> contact@adnanalam.com</p>
+              <p><FaPhone className="footer-icon" /> +91 8178756228</p>
+              <p><FaMapMarkerAlt className="footer-icon" /> New Delhi, India</p>
+            </div>
+            <div className="footer-section">
+              <h3 className="footer-title">Connect</h3>
+              <div className="footer-social">
+                {socialLinks.map((link, index) => (
+                  <a key={index} href={link.url} target="_blank" rel="noopener noreferrer">
+                    <link.icon />
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
-        </footer>
+        )}
+        <div className="footer-credit">
+          <p>Designed and developed with <span className="heart">❤️</span> by Adnan Alam</p>
+        </div>
       </div>
-    </ParallaxProvider>
+    </footer>
   )
+
+  return (
+    <>
+      <header className={`header ${hideNav ? 'hide' : ''}`}>
+        <div className="container">
+          <Link to="/" className="logo">
+            Adnan's Portfolio
+          </Link>
+          <nav className={`nav ${isOpen ? "open" : ""}`}>
+            {menuItems.map((item, index) => (
+              <motion.div
+                key={item.path}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <Link to={item.path} activeClassName="active">
+                  <item.icon className="nav-icon" />
+                  <span className="nav-text">{item.label}</span>
+                </Link>
+              </motion.div>
+            ))}
+          </nav>
+          <motion.button 
+            className="menu-toggle" 
+            onClick={() => setIsOpen(!isOpen)}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {isOpen ? <FaTimes /> : <FaBars />}
+          </motion.button>
+        </div>
+      </header>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className="mobile-menu"
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          >
+            {menuItems.map((item, index) => (
+              <motion.div
+                key={item.path}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Link to={item.path} activeClassName="active" onClick={() => setIsOpen(false)}>
+                  <item.icon className="nav-icon" />
+                  <span className="nav-text">{item.label}</span>
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <main>
+        <div className="page-content">
+          {children}
+        </div>
+      </main>
+      <Footer />
+      <AnimatePresence>
+        {showBackToTop && (
+          <motion.button
+            className="back-to-top"
+            onClick={scrollToTop}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <FaArrowUp />
+          </motion.button>
+        )}
+      </AnimatePresence>
+    </>
+  )
+}
+
+Layout.propTypes = {
+  children: PropTypes.node.isRequired,
 }
 
 export default Layout

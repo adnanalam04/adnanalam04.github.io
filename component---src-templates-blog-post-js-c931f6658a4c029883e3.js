@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunkadnan_alam_portfolio=self.webpackChunkadnan_alam_portfolio||[]).push([[751],{6093:function(e,t,n){n.r(t),n.d(t,{default:function(){return r}});var a=n(6540),l=n(5105);function r(e){let{data:t}=e;const n=t.markdownRemark;return a.createElement(l.A,null,a.createElement("div",null,a.createElement("h1",null,n.frontmatter.title),a.createElement("div",{dangerouslySetInnerHTML:{__html:n.html}})))}}}]);
-//# sourceMappingURL=component---src-templates-blog-post-js-c931f6658a4c029883e3.js.map

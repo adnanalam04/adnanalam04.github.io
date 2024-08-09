@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { Link } from "gatsby"
 import Layout from "../components/layout"
 import { motion, AnimatePresence } from "framer-motion"
-import { FaCode, FaLaptopCode, FaGithub, FaLinkedin, FaTwitter, FaCertificate, FaChevronRight, FaBlog, FaShieldAlt, FaBug, FaLock } from "react-icons/fa"
+import { FaCode, FaLaptopCode, FaLinkedin, FaCertificate, FaChevronRight, FaBlog, FaShieldAlt, FaBug, FaLock } from "react-icons/fa"
 import { StaticImage } from "gatsby-plugin-image"
 import "../styles/home.css"
 
@@ -19,6 +19,7 @@ const IndexPage = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [loopNum, setLoopNum] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(100);
+  const [isRestarting, setIsRestarting] = useState(false);
 
   const phrases = [
     'Hey, I am Adnan',
@@ -42,14 +43,16 @@ const IndexPage = () => {
 
     setText(isDeleting ? fullText.substring(0, text.length - 1) : fullText.substring(0, text.length + 1));
 
-    setTypingSpeed(isDeleting ? 20 : 100);
+    setTypingSpeed(isDeleting ? 20 : 50);
 
     if (!isDeleting && text === fullText) {
-      setTimeout(() => setIsDeleting(true), 700);
+      setTimeout(() => setIsDeleting(true), 1000);
     } else if (isDeleting && text === '') {
       setIsDeleting(false);
       setLoopNum(loopNum + 1);
-      setTypingSpeed(300);
+      setTypingSpeed(200);
+      setIsRestarting(true);
+      setTimeout(() => setIsRestarting(false), 100);
     }
   };
 
@@ -69,21 +72,23 @@ const IndexPage = () => {
               transition={{ delay: 0.2, duration: 0.5 }}
             >
               <AnimatePresence mode="wait">
-                <motion.span
+                <motion.div
                   key={loopNum}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.5 }}
+                  className="typewriter-container"
                 >
                   {loopNum % phrases.length === 0 ? (
-                    <span className="typewriter">{text}</span>
+                    <span className={`typewriter ${isRestarting ? 'restart' : ''}`}>{text}</span>
                   ) : (
                     <>
-                      I am a <span className="typewriter">{text}</span>
+                      I am a <span className={`typewriter ${isRestarting ? 'restart' : ''}`}>{text}</span>
                     </>
                   )}
-                </motion.span>
+                  <span className="typewriter-cursor"></span>
+                </motion.div>
               </AnimatePresence>
             </motion.h1>
             <motion.p
@@ -97,7 +102,7 @@ const IndexPage = () => {
               className="cta-buttons"
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.4 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
             >
               <Link to="/projects" className="cta-button">
                 <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -111,23 +116,22 @@ const IndexPage = () => {
               </Link>
             </motion.div>
           </div>
-          <div className="hero-image">
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.5, duration: 0.5 }}
-            >
-              <StaticImage
-                src="../images/Profilepic.jpg"
-                alt="Adnan Alam"
-                placeholder="blurred"
-                layout="fixed"
-                width={300}
-                height={300}
-                className="profile-picture"
-              />
-            </motion.div>
-          </div>
+          <motion.div
+            className="hero-image"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+          >
+            <StaticImage
+              src="../images/Profilepic.jpg"
+              alt="Adnan Alam"
+              placeholder="blurred"
+              layout="fixed"
+              width={300}
+              height={300}
+              className="profile-picture"
+            />
+          </motion.div>
         </section>
 
         <motion.section
@@ -152,7 +156,10 @@ const IndexPage = () => {
         >
           <div className="about-content">
             <h2>About Me</h2>
-            <p>I'm a passionate cybersecurity professional with expertise in ethical hacking, digital forensics, and secure software development. My mission is to protect digital assets and empower organizations against evolving cyber threats.</p>
+            <p>Hi, my name is Adnan and I am a B-tech student in computer science and engineering.</p>
+            <p>I am passionate about technology and constantly seeking to learn and grow in this field. My expertise lies in cyber security, and I am dedicated to staying up-to-date on the latest developments and trends in this rapidly evolving field.</p>
+            <p>I believe that cyber security is crucial in today's digital age and am committed to helping others understand the importance of staying secure online.</p>
+            <p>I am always open to new learning opportunities and am excited to see where my passion for technology takes me in the future. </p>
             <Link to="/about" className="learn-more">
               <motion.span whileHover={{ x: 5 }}>
                 Learn More About Me <FaChevronRight />
@@ -160,7 +167,7 @@ const IndexPage = () => {
             </Link>
           </div>
           <div className="skills">
-            <h3>Key Skills</h3>
+            <h3><center>Key Skills</center></h3>
             <ul>
               <SkillItem icon={FaShieldAlt} skill="Penetration Testing" />
               <SkillItem icon={FaLock} skill="Secure Coding Practices" />
@@ -173,77 +180,20 @@ const IndexPage = () => {
         </motion.section>
 
         <motion.section
-          className="testimonials"
+          className="cta"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.5 }}
         >
-          <h2>What People Say</h2>
-          <div className="testimonial-grid">
-            <TestimonialCard
-              text="Adnan's expertise in cybersecurity is unparalleled. He helped us secure our systems and prevent potential breaches."
-              author="John Doe, CEO of TechCorp"
-            />
-            <TestimonialCard
-              text="Working with Adnan was a game-changer for our organization. His insights and solutions are invaluable."
-              author="Jane Smith, CTO of SecureNet"
-            />
-            <TestimonialCard
-              text="Adnan's ethical hacking skills uncovered vulnerabilities we never knew existed. Highly recommended!"
-              author="Mike Johnson, CISO of DataGuard"
-            />
-          </div>
-        </motion.section>
-
-        <motion.section
-          className="cta"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9, duration: 0.5 }}
-        >
-          <div className="cta-background"></div>
           <div className="cta-content">
-            <motion.h2
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2 }}
-            >
-              Ready to Secure Your Digital Future?
-            </motion.h2>
-            <motion.p
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.4 }}
-            >
-              Let's build a robust security infrastructure together.
-            </motion.p>
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.6 }}
-            >
-              <Link to="/contact" className="cta-button">
-                <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  Get Started
-                  <FaChevronRight className="cta-icon" />
-                </motion.span>
-              </Link>
-            </motion.div>
-          </div>
-          <div className="cta-overlay"></div>
-        </motion.section>
-
-        <motion.section
-          className="social-proof"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, duration: 0.5 }}
-        >
-          <h2>Connect With Me</h2>
-          <div className="social-icons">
-            <SocialIcon href="https://github.com/adnanalam04" icon={FaGithub} />
-            <SocialIcon href="https://linkedin.com/in/adnanalam04" icon={FaLinkedin} />
-            <SocialIcon href="https://twitter.com/addyy04" icon={FaTwitter} />
+            <h2>Ready to Secure Your Digital Future?</h2>
+            <p>Let's build a robust security infrastructure together.</p>
+            <Link to="/contact" className="cta-button">
+              <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                Get Started
+                <FaChevronRight className="cta-icon" />
+              </motion.span>
+            </Link>
           </div>
         </motion.section>
       </motion.div>
@@ -267,29 +217,6 @@ const SkillItem = ({ icon: Icon, skill }) => (
   <motion.li whileHover={{ x: 5 }}>
     <Icon /> {skill}
   </motion.li>
-)
-
-const TestimonialCard = ({ text, author }) => (
-  <motion.div
-    className="testimonial-card"
-    whileHover={{ scale: 1.05 }}
-    whileTap={{ scale: 0.95 }}
-  >
-    <p>"{text}"</p>
-    <h4>{author}</h4>
-  </motion.div>
-)
-
-const SocialIcon = ({ href, icon: Icon }) => (
-  <motion.a
-    href={href}
-    target="_blank"
-    rel="noopener noreferrer"
-    whileHover={{ scale: 1.2 }}
-    whileTap={{ scale: 0.9 }}
-  >
-    <Icon />
-  </motion.a>
 )
 
 export default IndexPage

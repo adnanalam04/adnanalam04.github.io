@@ -76,7 +76,7 @@ const Layout = ({ children }) => {
           <div className="footer-content">
             <div className="footer-section">
               <h3 className="footer-title">Contact</h3>
-              <p><FaEnvelope className="footer-icon" /> contact@adnanalam.com</p>
+              <p><FaEnvelope className="footer-icon" /> adnanalam0004@gmail.com</p>
               <p><FaPhone className="footer-icon" /> +91 8178756228</p>
               <p><FaMapMarkerAlt className="footer-icon" /> New Delhi, India</p>
             </div>

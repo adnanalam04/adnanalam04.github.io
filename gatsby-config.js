@@ -3,13 +3,15 @@ module.exports = {
     title: `Adnan Alam - Cybersecurity Expert`,
     description: `Portfolio and blog of Adnan Alam, showcasing expertise in cybersecurity, ethical hacking, and secure software development.`,
     author: `Adnan Alam`,
-    siteUrl: `https://adnanalam.me`, // Updated to your custom domain
+    siteUrl: `https://adnanalam.me`,
+    linkedinFollowers: "23307", // Add this line for LinkedIn followers
   },
   plugins: [
     `gatsby-plugin-react-helmet`,
     `gatsby-plugin-image`,
     `gatsby-plugin-sharp`,
     `gatsby-transformer-sharp`,
+    `gatsby-transformer-json`, // Add this for JSON data
     {
       resolve: `gatsby-source-filesystem`,
       options: {
@@ -22,6 +24,13 @@ module.exports = {
       options: {
         name: `blog`,
         path: `${__dirname}/src/content/blog`,
+      },
+    },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `data`,
+        path: `${__dirname}/src/data`, // Add this for JSON data
       },
     },
     {
@@ -56,10 +65,9 @@ module.exports = {
         background_color: `#663399`,
         theme_color: `#663399`,
         display: `minimal-ui`,
-        icon: `src/images/gatsby-icon.png`, // Ensure this file exists
+        icon: `src/images/gatsby-icon.png`,
       },
     },
-    `gatsby-plugin-offline`, // For offline support
+    `gatsby-plugin-offline`,
   ],
-  // Remove the pathPrefix since you're using a custom domain
 }

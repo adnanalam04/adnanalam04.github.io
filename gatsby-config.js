@@ -4,7 +4,7 @@ module.exports = {
     description: `Portfolio and blog of Adnan Alam, showcasing expertise in cybersecurity, ethical hacking, and secure software development.`,
     author: `Adnan Alam`,
     siteUrl: `https://adnanalam.me`,
-    linkedinFollowers: "23307", // Add this line for LinkedIn followers
+    linkedinFollowers: "24k+", // Added this line for LinkedIn followers
   },
   plugins: [
     `gatsby-plugin-react-helmet`,

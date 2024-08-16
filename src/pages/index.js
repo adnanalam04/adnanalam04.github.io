@@ -8,7 +8,7 @@ import "../styles/home.css"
 
 // Manually updated stats
 const stats = {
-  linkedinFollowers: "23,307",
+  linkedinFollowers: "24k+",
   blogsPublished: 1,
   certifications: 8,
   projectsCompleted: 5
